@@ -1,24 +1,20 @@
 #title
 print("Grade Checker")
-#get users test score
-gradeInput = input("Enter your test score: ")
-#str -> int
-if gradeInput.isdigit():
-    grade = int(gradeInput)
-#safety statement
-else:
-    print("Invalid Input")
-    grade = -1
+#get user test score & str -> int
+grade = int(input("Enter your test score: "))
 #classifier
-if grade >= 90 and grade <= 100:
-    print("A")
-elif grade < 90 and grade >= 80:
-    print("B")
-elif grade < 80 and grade >= 70:
-    print("C")
-elif grade < 70 and grade >= 60:
-    print("D")
-elif grade < 60 and grade >= 0:
-    print("F")
+if grade > 100 or grade < 0:
+    print("Invalid score. Please enter a number between 0 and 100.")
+elif grade >= 90:
+    print("You got an A!")
+elif grade >= 80:
+    print("You got a B.")
+elif grade >= 70:
+    print("You got a C.")
+elif grade >= 60:
+    print("You got a D.")
+elif grade <60 and grade > 0:
+    print("You got an F.")
+#syntax statement
 else:
-    print("You have inputted your answer incorrectly.")
+    print("Invalid Input, please try again.")
