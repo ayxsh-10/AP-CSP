@@ -1,4 +1,4 @@
-# collaborated with Priyanshu Sharma
+# collaborated with Priyanshu Sharma P.4
 #title
 print("Dice Game Result Checker")
 #get input & str -> int
