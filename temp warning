@@ -18,7 +18,7 @@ try:
     else:
         print("Extremely Hot")
 #syntax statement
-#also the hardest part to debug for all 3 coding mini-projects.
+#the hardest part to debug for all 3 coding mini-projects.
 #testing helped find logical problems with the conditionals, and try new ways to solve problems, like the try and except function, which ended up being my best plan.
 #i like to use comments, but im definetly going to check my code with a partner to gain feedback from them as well.
 except ValueError:
