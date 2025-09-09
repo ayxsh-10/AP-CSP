@@ -1,11 +1,21 @@
 #title
 print("Temperature Warning System")
-
-temp = input("Enter temperature: ")
-
-if temp < "0" and temp > "100":
-    print("Too cold or too hot??")
-elif temp >= "0" or temp <= "100" and temp == "50":
-    print("Perfect maybe?")
-else:
-    print("Weather broken I guess")
+#get input & str -> float
+try:
+    temp = float(input("Enter temperature: "))
+#classifier
+    if temp > 100 or temp < 0:
+        print("EXTREME TEMPERATURE.")
+    elif temp <= 32:
+        print("Pretty Cold")
+    elif temp <= 50:
+        print("Chilly")
+    elif temp <= 70:
+        print("Cool")
+    elif temp <= 85:
+        print("Hot")
+    else:
+        print("Extremely Hot")
+#syntax statement
+except ValueError:
+    print("This value is not accepted, please input a number.")
