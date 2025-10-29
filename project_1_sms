@@ -1,0 +1,177 @@
+students = []
+
+#Obtaining ID Function
+def get_ID():
+    ID = input("Enter student ID: ")
+    if not ID.isdigit():
+        print("Error: Input must be an integer.")
+        return None
+    return int(ID)
+
+#Obtaining Grade Function
+def get_grade():
+    grade = input("Enter student grade: ")
+    try:
+        return float(grade)
+    except:
+        print("Error: Input must be a number.")
+        return None
+
+#Add a student to database
+def add_student():
+    name = input("Enter student name: ")
+    studentID = get_ID()
+    if studentID is None:
+        print("Invalid student ID entered. Please try again.")
+        return
+    grade = get_grade()
+    if grade is None:
+        print("Invalid student grade entered. Please try again.")
+        return
+
+    for s in students:
+        if s["ID"] == studentID:
+            print("Error: A student with that ID already exists.")
+            return
+
+    students.append({"Name": name, "ID": studentID, "Grade": grade})
+    print("Student was added.")
+
+#Display all students inside database
+def display_students():
+    if not students:
+        print("No students found.")
+    else:
+        for s in students:
+            ID = s["ID"]
+            Name = s["Name"]
+            Grade = s["Grade"]
+            print("ID:", ID, "Name:", Name, "Grade:", Grade)
+
+#Find student by ID
+def find_student_by_ID():
+    studentID = get_ID()
+    for s in students:
+        if s["ID"] == studentID:
+            ID = s["ID"]
+            Name = s["Name"]
+            Grade = s["Grade"]
+            print("ID:", ID, "Name:", Name, "Grade:", Grade)
+            return
+    if studentID is None:
+        print("Invalid student ID entered. Please try again.")
+        return
+    print("Student not found in database.")
+
+#Remove a student by ID
+def remove_student():
+    studentID = get_ID()
+    for s in students:
+        if s["ID"] == studentID:
+            students.remove(s)
+            print("Student removed successfully!")
+            return
+    if studentID is None:
+        print("Invalid student ID entered. Please try again.")
+        return
+    print("Student not found in database.")
+
+#Update a student's grade
+def update_grade():
+    studentID = get_ID()
+    for s in students:
+        if s["ID"] == studentID:
+            new_grade = get_grade()
+            if new_grade is None:
+                return
+            s["Grade"] = new_grade
+            print("Grade updated successfully!")
+            return
+    if studentID is None:
+        print("Invalid student ID entered. Please try again.")
+        return
+    print("Student not found in database.")
+
+#Sort students by name/grade
+def sort_students():
+    choice = input("Choose which list to sort by, 1. Name, 2. Grade")
+    if choice == "1":
+        students.sort(key=lambda s: s["Name"].lower())
+        print("Students sorted by name.")
+    elif choice == "2":
+        students.sort(key=lambda s: s["Grade"], reverse=True)
+        print("Students sorted by grade.")
+
+#Search students in database
+def search_students():
+    print("Search by: 1. Name 2. Grade 3. ID")
+    choice = input("Choose an option: ")
+    results = []
+    if choice == "1":
+        name = input("Enter name to search: ").lower()
+        for s in students:
+            if s["Name"] == name:
+                results.append(s)        
+    elif choice == "2":
+        grade = get_grade()
+        if grade is None:
+            return
+        for s in students:
+            if s["Grade"] == grade:
+                results.append(s)
+    elif choice == "3":
+        studentID = get_ID()
+        if studentID is None:
+            return
+        results = []
+        for s in students:
+            if s["ID"] == studentID:
+                results.append(s)
+        else:
+            print("Invalid selection.")
+            return
+
+    if results:
+        for s in results:
+            ID = s["ID"]
+            Name = s["Name"]
+            Grade = s["Grade"]
+            print("ID:", ID, "Name:", Name, "Grade:", Grade)
+    else:
+        print("No matching students found.")
+
+#Main menu of program UI
+def main_menu():
+    while True:
+        print("\nStudent Management System")
+        print("1. Add Student")
+        print("2. Display All Students")
+        print("3. Find Student by ID")
+        print("4. Remove Student by ID")
+        print("5. Update Student Grade")
+        print("6. Sort Students")
+        print("7. Search Students")
+        print("8. Exit")
+
+        choice = input("Choose an option: ")
+        if choice == "1":
+            add_student()
+        elif choice == "2":
+            display_students()
+        elif choice == "3":
+            find_student_by_ID()
+        elif choice == "4":
+            remove_student()
+        elif choice == "5":
+            update_grade()
+        elif choice == "6":
+            sort_students()
+        elif choice == "7":
+            search_students()
+        elif choice == "8":
+            print("Exiting program...")
+            break
+        else:
+            print("Invalid choice. Please select between 1-8.")
+
+main_menu()
