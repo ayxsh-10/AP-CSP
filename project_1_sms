@@ -175,3 +175,86 @@ def main_menu():
             print("Invalid choice. Please select between 1-8.")
 
 main_menu()
+
+#Student Management System
+#1. Add Student
+#2. Display All Students
+#3. Find Student by ID
+#4. Remove Student by ID
+#5. Update Student Grade
+#. Sort Students
+#7. Search Students
+#8. Exit
+#Choose an option: 1
+#Enter student name: Ayush Kumar
+#Enter student ID: 201229032
+#Enter student grade: 105
+#Student was added.
+
+#Student Management System
+#1. Add Student
+#2. Display All Students
+#3. Find Student by ID
+#4. Remove Student by ID
+#5. Update Student Grade
+#6. Sort Students
+#7. Search Students
+#8. Exit
+#Choose an option: 1
+#Enter student name: Priyanshu Sharma
+#Enter student ID: 201212188
+#Enter student grade: 67
+#Student was added.
+
+#Student Management System
+#1. Add Student
+#2. Display All Students
+#3. Find Student by ID
+#4. Remove Student by ID
+#5. Update Student Grade
+#6. Sort Students
+#7. Search Students
+#8. Exit
+#Choose an option: 2
+#ID: 201229032 Name: Ayush Kumar Grade: 105.0
+#ID: 201212188 Name: Priyanshu Sharma Grade: 67.0
+
+#Student Management System
+#1. Add Student
+#2. Display All Students
+#3. Find Student by ID
+#4. Remove Student by ID
+#5. Update Student Grade
+#6. Sort Students
+#7. Search Students
+#8. Exit
+#Choose an option: 3
+#Enter student ID: 201229032
+#ID: 201229032 Name: Ayush Kumar Grade: 105.0
+
+#Student Management System
+#1. Add Student
+#2. Display All Students
+#3. Find Student by ID
+#4. Remove Student by ID
+#5. Update Student Grade
+#6. Sort Students
+#7. Search Students
+#8. Exit
+#Choose an option: 4
+#Enter student ID: 201229032
+#Student removed successfully!
+
+#Student Management System
+#1. Add Student
+#2. Display All Students
+#3. Find Student by ID
+#4. Remove Student by ID
+#5. Update Student Grade
+#6. Sort Students
+#7. Search Students
+#8. Exit
+#Choose an option: 5
+#Enter student ID: 201212188
+#Enter student grade: 110
+#Grade updated successfully!
