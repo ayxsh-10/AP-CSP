@@ -61,7 +61,7 @@ show_score_overlay = False
 dragging = False
 mouse_pos = (0, 0)
 
-#Buttons
+#Initial Button Definitions
 menu_buttons = []
 game_buttons = []
 
@@ -164,7 +164,7 @@ def compute_score():
             best = max(best, pts)
     return best
 
-#-----Drawing----
+#----Drawing----
 def draw_lane():
     pygame.draw.rect(screen, lane_color, (lane_margin, lane_top, width - 2*lane_margin, height - lane_top), border_radius=30)
 
@@ -219,6 +219,7 @@ def draw_rules_overlay():
         txt = font_small.render(rule, True, (255, 255, 255))
         screen.blit(txt, (overlay_rect.x + 20, overlay_rect.y + 50 + i * 25))
 
+#----Game-Logistics----
 def draw_game_hud():
     title = font_score.render("SKEEBALL", True, (255, 255, 255))
     screen.blit(title, (width // 2 - title.get_width() // 2, 15))
@@ -253,13 +254,13 @@ def draw_score_overlay():
     for b in menu_buttons:
         b.draw(screen)
 
-#-----Main-Loop----
+#----Main-Loop-Variables----
 def main():
     global state, show_score_overlay, menu_buttons, game_buttons, dragging, mouse_pos
 
     running = True
 
-    #-----Button-Callbacks----
+    #-----Button-Callback-Functions----
     def start_game():
         global state, dragging
         dragging = False
