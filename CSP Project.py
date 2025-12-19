@@ -1,15 +1,15 @@
-# imports
+#Imports
 import pygame
 import sys
 import math
 
 pygame.init()
 
-# --- Global Variables ---
+#-----Global-Variables----
 width, height = 800, 600
 fps = 60
 
-# Fonts
+#Fonts
 font_title  = pygame.font.Font(None, 48)  #for menu title
 font_button = pygame.font.Font(None, 28)  #for button labels
 font_score  = pygame.font.Font(None, 24)  #for scores and rings
@@ -19,7 +19,7 @@ screen = pygame.display.set_mode((width, height))
 pygame.display.set_caption("Skeeball w/ PyGame")
 clock = pygame.time.Clock()
 
-# Colors
+#Colors
 bg_color = (10, 10, 20)
 lane_color = (120, 80, 40)
 ring_color = (200, 200, 200)
@@ -30,13 +30,13 @@ button_hover = (100, 100, 100)
 overlay_bg = (20, 20, 30)
 overlay_border = (200, 0, 200)
 
-# Physics
+#Physics
 gravity = 0.4
 friction_x = 0.95
 bounce_damp = 0.5
 power_scale = 0.18
 
-# Ball and lane setup
+#Ball and lane setup
 start_x = width // 2
 start_y = height - 80
 ball_radius = 12
@@ -51,7 +51,7 @@ lane_top = 80
 lane_margin = 100
 lane_bottom = height - 10
 
-# Game state
+#Game state
 score_total = 0
 shots = 0
 shot_scores = []
@@ -61,11 +61,11 @@ show_score_overlay = False
 dragging = False
 mouse_pos = (0, 0)
 
-# Buttons
+#Buttons
 menu_buttons = []
 game_buttons = []
 
-# Scoring Rings
+#Scoring Rings
 rings = [
     (width // 2, lane_top + 40, 22, 100),
     (width // 2 - 90, lane_top + 70, 35, 100),
@@ -74,7 +74,7 @@ rings = [
     (width // 2, lane_top + 200, 80, 10),
 ]
 
-# --- Button Class ---
+#-----Button-Class----
 class Button:
     def __init__(self, x, y, w, h, on_click=None, text=""):
         self.rect = pygame.Rect(x, y, w, h)
@@ -98,7 +98,7 @@ class Button:
             if self.rect.collidepoint(event.pos) and self.on_click:
                 self.on_click()
 
-# --- Game Logic ---
+#-----Game-Logic----
 def reset_ball():
     global ball_x, ball_y, ball_vx, ball_vy, ball_in_air, ball_at_rest
     ball_x = start_x
@@ -164,14 +164,14 @@ def compute_score():
             best = max(best, pts)
     return best
 
-# --- Drawing ---
+#-----Drawing----
 def draw_lane():
     pygame.draw.rect(screen, lane_color, (lane_margin, lane_top, width - 2*lane_margin, height - lane_top), border_radius=30)
 
 def draw_rings():
     for cx, cy, r, pts in rings:
         pygame.draw.circle(screen, ring_color, (cx, cy), r, 3)
-        # label each ring with its points, using font_score
+        #label each ring with its points, using font_score
         txt = font_score.render(str(pts), True, (255, 255, 255))
         txt_rect = txt.get_rect(center=(cx, cy))
         screen.blit(txt, txt_rect)
@@ -182,12 +182,12 @@ def draw_ball():
 def draw_menu():
     screen.fill(bg_color)
 
-    # title line 1
+    #title line 1
     title_surf = font_title.render("SKEEBALL", True, (255, 255, 255))
     title_rect = title_surf.get_rect(center=(width // 2, height // 3 - 30))
     screen.blit(title_surf, title_rect)
 
-    # title line 2
+    #title line 2
     subtitle_surf = font_title.render("IN PYGAME", True, (255, 255, 255))
     subtitle_rect = subtitle_surf.get_rect(center=(width // 2, height // 3 + 30))
     screen.blit(subtitle_surf, subtitle_rect)
@@ -206,6 +206,7 @@ def draw_rules_overlay():
     rules_title = font_score.render("RULES", True, (255, 255, 255))
     screen.blit(rules_title, (overlay_rect.x + 20, overlay_rect.y + 15))
 
+    #Rules of Game Defined:
     rules = [
         "Drag ball to aim and set power",
         "Release mouse to launch", 
@@ -248,17 +249,17 @@ def draw_score_overlay():
     title_rect = title_surf.get_rect(center=(width // 2, height // 3))
     screen.blit(title_surf, title_rect)
     
-    # Draw buttons
+    #Draw buttons
     for b in menu_buttons:
         b.draw(screen)
 
-# --- Main Loop ---
+#-----Main-Loop----
 def main():
     global state, show_score_overlay, menu_buttons, game_buttons, dragging, mouse_pos
 
     running = True
 
-    # --- Button Callbacks ---
+    #-----Button-Callbacks----
     def start_game():
         global state, dragging
         dragging = False
@@ -286,7 +287,7 @@ def main():
     def reset_game():
         full_reset()
 
-    # --- Initialize Buttons ---
+    #-----Initialize-Buttons----
     menu_buttons[:] = [
         Button(width // 2 - 100, height // 2 + 40, 200, 45, start_game, text="Play"),
         Button(width // 2 - 100, height // 2 + 100, 200, 45, toggle_rules, text="Rules"),
@@ -300,7 +301,7 @@ def main():
         Button(width - 120, height - 50, 100, 35, quit_game, "Quit"),
     ]
 
-    # --- Main Game Loop ---
+    #-----Main-Game-Loop----
     while running:
         mouse_pos = pygame.mouse.get_pos()
 
@@ -325,7 +326,7 @@ def main():
                     dragging = False
                     launch_ball(event.pos)
 
-        # --- Drawing ---
+        #-----Drawing----
         screen.fill(bg_color)
 
         if state == "menu":
@@ -350,7 +351,7 @@ def main():
     pygame.quit()
     sys.exit()
 
-# --- Run Game ---
+#-----Run-Game----
 if __name__ == "__main__":
     full_reset()
     main()
