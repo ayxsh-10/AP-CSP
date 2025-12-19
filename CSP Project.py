@@ -10,10 +10,10 @@ width, height = 800, 600
 fps = 60
 
 # Fonts
-font_title  = pygame.font.Font(None, 48)  # for menu title
-font_button = pygame.font.Font(None, 28)  # for button labels
-font_score  = pygame.font.Font(None, 24)  # for scores and rings
-font_small  = pygame.font.Font(None, 18)  # for small hints
+font_title  = pygame.font.Font(None, 48)  #for menu title
+font_button = pygame.font.Font(None, 28)  #for button labels
+font_score  = pygame.font.Font(None, 24)  #for scores and rings
+font_small  = pygame.font.Font(None, 18)  #for small hints
 
 screen = pygame.display.set_mode((width, height))
 pygame.display.set_caption("Skeeball w/ PyGame")
@@ -195,7 +195,6 @@ def draw_menu():
     for b in menu_buttons:
         b.draw(screen)
 
-    # rules overlay (simple text) if show_rules is True
     if show_rules:
         draw_rules_overlay()
     
@@ -208,11 +207,11 @@ def draw_rules_overlay():
     screen.blit(rules_title, (overlay_rect.x + 20, overlay_rect.y + 15))
 
     rules = [
-        " Drag ball to aim and set power",
-        " Release mouse to launch", 
-        " Ball stops in ring = points",
-        " Each shot tracked in score table",
-        " Click Score button to view"
+        "Drag ball to aim and set power",
+        "Release mouse to launch", 
+        "Ball stops in ring = points",
+        "Each shot tracked in score table",
+        "Click Score button to view"
     ]
     
     for i, rule in enumerate(rules):
@@ -244,7 +243,7 @@ def draw_score_overlay():
     screen.blit(total, (overlay_rect.centerx - total.get_width() // 2, overlay_rect.bottom - 45))
 
 
-    # Draw title
+    #Draw title
     title_surf = font_title.render("SKEEBALL", True, (255,255,255))
     title_rect = title_surf.get_rect(center=(width // 2, height // 3))
     screen.blit(title_surf, title_rect)
