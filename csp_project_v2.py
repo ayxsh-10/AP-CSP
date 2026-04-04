@@ -13,11 +13,19 @@ pygame.display.set_caption("WPM Tracker")
 clock = pygame.time.Clock()
 fps = 60
 
-# colors and fonts
-bg_color = (15,35,15)
-font_large = pygame.font.Font(None, 40)
-font_medium = pygame.font.Font(None, 25)
-font_small = pygame.font.Font(None, 18)
+# colors
+bg_color = (30, 30, 30)
+text_dim = (80, 80, 80)           # untyped letters
+text_correct = (200, 100, 200)
+text_wrong = (200, 50, 50)
+text_cursor = (230, 180, 80)
+text_ui = (100, 100, 100)         # WPM/accuracy labels
+text_highlight = (230, 180, 80)   # WPM numbers and results
+
+#fonts
+font_large = pygame.font.SysFont("consolas", 40)
+font_medium = pygame.font.SysFont("consolas", 25)
+font_small = pygame.font.SysFont("consolas", 18)
 
 # list of possible words to type
 words = ["apple", "lantern", "velocity", "carpet", "glacier", "melody", "shadow", "circuit",
