@@ -5,7 +5,7 @@ import random
 # setup
 pygame.init()
 
-width, height = 1200, 600
+width, height = 1600, 600
 screen = pygame.display.set_mode((width,height))
 pygame.display.set_caption("WPM Tracker")
 
@@ -100,9 +100,10 @@ words = ["apple", "lantern", "velocity", "carpet", "glacier", "melody", "shadow"
 ]
     
 # typing setup (variables + booleans)
-current_words = random.sample(words,10)
-target_text = " ".join(current_words)
-typed_text = "" 
+word_count = 10
+state = "menu"
+typed_text = ""
+target_text = "" 
 start_time = None
 test_active = False
 test_done = False
@@ -126,6 +127,24 @@ def calculate_accuracy(typed, target):
             correct += 1
     return round((correct / len(typed)) * 100)
 
+# menu screen
+def draw_menu():
+    screen.fill(bg_color)
+
+    title = font_large.render("WPM TRACKER", True, text_highlight)
+    screen.blit(title, (width // 2 - title.get_width() // 2, height // 2 - 120))
+
+    subtitle = font_small.render("select a mode to begin", True, text_dim)
+    screen.blit(subtitle, (width // 2 - subtitle.get_width() // 2, height // 2 - 60))
+
+    mode10w = font_medium.render("[1] 10 words", True, text_correct if word_count == 10 else text_dim)
+    mode25w = font_medium.render("[2] 25 words", True, text_correct if word_count == 25 else text_dim)
+    start = font_medium.render("[ENTER]", True, text_highlight)
+
+    screen.blit(mode10w, (width // 2 - mode10w.get_width() // 2, height // 2))
+    screen.blit(mode25w, (width //2 - mode25w.get_width() // 2, height //2 + 50)) # 50 = placeholder
+    screen.blit(start, (width // 2 - start.get_width() // 2, height // 2 + 120))
+
 # game loop
 while True:
     for event in pygame.event.get():
@@ -133,61 +152,85 @@ while True:
             pygame.quit()
             sys.exit()
         if event.type == pygame.KEYDOWN:
-            if test_done:
-                if event.key == pygame.K_r:
-                    current_words = random.sample(words, 10)
+            if state == "menu":
+                if event.key == pygame.K_1:
+                    word_count = 10
+                if event.key == pygame.K_2:
+                    word_count = 25
+                if event.key == pygame.K_RETURN:
+                    current_words = random.sample(words, word_count)
                     target_text = " ".join(current_words)
                     typed_text = ""
                     start_time = None
                     test_active = False
                     test_done = False
-                if event.key == pygame.K_q:
-                    pygame.quit()
-                    sys.exit()
-            if not test_done:
-                if start_time == None:
-                    start_time = pygame.time.get_ticks()
-                    test_active = True
-                if event.key == pygame.K_BACKSPACE:
-                    typed_text = typed_text[:-1]
-                else:
-                    typed_text += event.unicode
-                if typed_text == target_text:
-                    elapsed = (pygame.time.get_ticks() - start_time) / 1000
-                    test_done = True
+                    elapsed = 0
+                    state = "game"
+            elif state == "game":
+                if test_done:
+                    if event.key == pygame.K_r:
+                        state = "menu"
+                    if event.key == pygame.K_q:
+                        pygame.quit()
+                        sys.exit()
+                if not test_done:
+                    if start_time == None:
+                        start_time = pygame.time.get_ticks()
+                        test_active = True
+                    if event.key == pygame.K_BACKSPACE:
+                        typed_text = typed_text[:-1]
+                    else:
+                        typed_text += event.unicode
+                    if typed_text == target_text:
+                        elapsed = (pygame.time.get_ticks() - start_time) / 1000
+                        test_done = True
     screen.fill(bg_color)
+    # drawing section
+    if state == "menu":
+        draw_menu()
+    elif state == "game":
     # shows live WPM and accuracy on screen while typing
-    if test_done:
-        final_wpm = calculate_wpm(len(typed_text), elapsed)
-        final_acc = calculate_accuracy(typed_text, target_text)
+        if test_done:
+            final_wpm = calculate_wpm(len(typed_text), elapsed)
+            final_acc = calculate_accuracy(typed_text, target_text)
 
-        title_surface = font_large.render("Test Complete!", True, (255, 255, 100))
-        wpm_surface = font_large.render(f"WPM: {final_wpm}", True, (255, 255, 255))
-        acc_surface = font_large.render(f"Accuracy: {final_acc}%", True, (255, 255, 255))
-        retry_surface = font_small.render("Press R to retry or Q to quit", True, (150, 150, 150))
+            title_surface = font_large.render("Test Complete!", True, (255, 255, 100))
+            wpm_surface = font_large.render(f"WPM: {final_wpm}", True, (255, 255, 255))
+            acc_surface = font_large.render(f"Accuracy: {final_acc}%", True, (255, 255, 255))
+            retry_surface = font_small.render("Press R to retry or Q to quit", True, (150, 150, 150))
 
-        screen.blit(title_surface, (width // 2 - title_surface.get_width() // 2, 180))
-        screen.blit(wpm_surface, (width // 2 - wpm_surface.get_width() // 2, 250))
-        screen.blit(acc_surface, (width // 2 - acc_surface.get_width() // 2, 300))
-        screen.blit(retry_surface, (width // 2 - retry_surface.get_width() // 2, 380))
+            screen.blit(title_surface, (width // 2 - title_surface.get_width() // 2, 180))
+            screen.blit(wpm_surface, (width // 2 - wpm_surface.get_width() // 2, 250))
+            screen.blit(acc_surface, (width // 2 - acc_surface.get_width() // 2, 300))
+            screen.blit(retry_surface, (width // 2 - retry_surface.get_width() // 2, 380))
 
-    elif test_active:
-        elapsed = (pygame.time.get_ticks() - start_time) / 1000
-        wpm = calculate_wpm(len(typed_text), elapsed)
-        accuracy = calculate_accuracy(typed_text, target_text)
-        wpm_surface = font_medium.render(f"WPM: {wpm}", True, (255, 255, 100))
-        acc_surface = font_medium.render(f"Accuracy: {accuracy}%", True, (255, 255, 100))
-        screen.blit(wpm_surface, (50,30))
-        screen.blit(acc_surface, (200, 30))
+        elif test_active:
+            elapsed = (pygame.time.get_ticks() - start_time) / 1000
+            wpm = calculate_wpm(len(typed_text), elapsed)
+            accuracy = calculate_accuracy(typed_text, target_text)
+            wpm_surface = font_medium.render(f"WPM: {wpm}", True, (255, 255, 100))
+            acc_surface = font_medium.render(f"Accuracy: {accuracy}%", True, (255, 255, 100))
+            screen.blit(wpm_surface, (50,30))
+            screen.blit(acc_surface, (200, 30))
 
-    # draw target text
-    target_surface = font_large.render(target_text, True, (255, 255, 255))
-    screen.blit(target_surface, (50, height // 2 - 60))
-    # draw what the user has typed so far
-    typed_surface = font_large.render(typed_text, True, (100, 255, 100))
-    screen.blit(typed_surface, (50, height // 2))
-    # draw small direction
-    action_surface = font_small.render("Start typing to begin...", True, (150, 150, 150))
-    screen.blit(action_surface, (50, height - 40))
+        # draw letters one by one
+        x = width // 2 - font_large.size(target_text)[0] // 2
+        y = height // 2 - 20                    # -20 is a placeholder (could change)
+
+        for i in range(len(target_text)):
+            letter = target_text[i]
+            if i < len(typed_text):
+                if typed_text[i] == letter:
+                    color = text_correct
+                else:
+                    color = text_wrong
+            else:
+                color = text_dim
+            letter_surface = font_large.render(letter, True, color)
+            screen.blit(letter_surface, (x, y))
+            x += letter_surface.get_width()
+        # draw small direction
+        action_surface = font_small.render("Start typing to begin...", True, (150, 150, 150))
+        screen.blit(action_surface, (50, height - 40))
     pygame.display.flip()
     clock.tick(60)
