@@ -100,7 +100,7 @@ words = ["apple", "lantern", "velocity", "carpet", "glacier", "melody", "shadow"
 ]
     
 # typing setup (variables + booleans)
-word_count = 10
+word_count = 0
 state = "menu"
 typed_text = ""
 target_text = "" 
