@@ -141,6 +141,10 @@ def game_loop():
                     revealed[r][c] = True
             print_board(board, revealed, flagged)
             break
+        elif result == "Already Revealed":
+            print("That cell is already revealed!")
+        elif result == "Invalid Move":
+            print("That's out of bounds!")
         if check_win(board, revealed):
             print("You win!")
             break
