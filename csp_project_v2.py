@@ -597,17 +597,16 @@ def evaluate_performance(typed, target, elapsed_seconds, word_data):
         minutes = elapsed_seconds / 60
         wpm = round((len(typed) / 5) / minutes)
     if len(typed) == 0:
-        accuracy = 0
+        accuracy = 100
     else:
         correct_chars = 0
         for i in range(len(typed)):
             if i < len(target) and typed[i] == target[i]:
                 correct_chars += 1
-    accuracy = round((correct_chars / len(typed)) * 100)
-    typed_words = typed.split(" ") 
+        accuracy = round((correct_chars / len(typed)) * 100)
+    typed_words = typed.split(" ")
     target_words = target.split(" ")
     missed_words = []
-
     for i in range(len(target_words)):
         if i < len(typed_words) and typed_words[i] != target_words[i]:
             missed_words.append(target_words[i])
@@ -625,24 +624,6 @@ def get_weighted_words(word_data, count):
     if count > len(weighted_pool):
         count = len(weighted_pool)
     return random.sample(weighted_pool, count)
-
-# wpm calculation
-# def calculate_wpm(chars_typed, elapsed_seconds):
-#     if elapsed_seconds == 0:
-#         return 0
-#     minutes = elapsed_seconds / 60
-#     wpm = (chars_typed / 5) / minutes
-#     return round(wpm)
-
-# accuracy calculation
-# def calculate_accuracy(typed, target):
-#     if len(typed) == 0:
-#         return 0
-#     correct = 0
-#     for i in range(len(typed)):
-#         if i < len(target) and typed[i] == target[i]:
-#             correct += 1
-#     return round((correct / len(typed)) * 100)
 
 # menu screen
 def draw_menu():
@@ -696,9 +677,10 @@ while True:
                         test_active = True
                     if event.key == pygame.K_BACKSPACE:
                         typed_text = typed_text[:-1]
-                    else:
-                        typed_text += event.unicode
-                    if typed_text == target_text:
+                    elif event.unicode and event.unicode.isprintable():
+                        if len(typed_text) < len(target_text):
+                            typed_text += event.unicode
+                    if typed_text[:len(target_text)] == target_text:
                         elapsed = (pygame.time.get_ticks() - start_time) / 1000
                         test_done = True
     screen.fill(bg_color)
@@ -734,21 +716,37 @@ while True:
             screen.blit(acc_surface, (200, 30))
 
         # draw letters one by one
-        x = width // 2 - font_large.size(target_text)[0] // 2
-        y = height // 2 - 20                    # -20 is a placeholder (could change)
+        words_in_target = target_text.split(" ")
+        current_text_width = 0
+        current_line = []
+        completed_lines = []
+        for word in words_in_target:
+            word_width = font_large.size(word + " ")[0]
+            if current_text_width + word_width > width:
+                completed_lines.append(current_line)
+                current_line = []
+                current_text_width = 0
+            current_line.append(word)
+            current_text_width += word_width
+        completed_lines.append(current_line)
 
-        for i in range(len(target_text)):
-            letter = target_text[i]
-            if i < len(typed_text):
-                if typed_text[i] == letter:
-                    color = text_correct
+        total_height = len(completed_lines) * 55
+        y = height // 2 - total_height // 2
+        list_position = 0
+        for idx, line in enumerate(completed_lines):
+            line_text = " ".join(line)
+            x = width // 2 - font_large.size(line_text)[0] // 2
+            for char in line_text:
+                if list_position < len(typed_text):
+                    color = text_correct if typed_text[list_position] == char else text_wrong
                 else:
-                    color = text_wrong
-            else:
-                color = text_dim
-            letter_surface = font_large.render(letter, True, color)
-            screen.blit(letter_surface, (x, y))
-            x += letter_surface.get_width()
+                    color = text_dim
+                char_surface = font_large.render(char, True, color)
+                screen.blit(char_surface, (x, y))
+                x += char_surface.get_width()
+                list_position += 1
+            y += 55
+            list_position += 1
         # draw small direction
         action_surface = font_small.render("Start typing to begin...", True, (150, 150, 150))
         screen.blit(action_surface, (50, height - 40))
