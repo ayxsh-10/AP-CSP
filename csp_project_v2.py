@@ -5,7 +5,7 @@ import random
 # setup
 pygame.init()
 
-width, height = 1600, 600
+width, height = 1200, 600
 screen = pygame.display.set_mode((width,height))
 pygame.display.set_caption("WPM Tracker")
 
