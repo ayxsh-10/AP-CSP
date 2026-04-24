@@ -665,47 +665,30 @@ while True:
                     elapsed = 0
                     state = "game"
             elif state == "game":
-                if test_done:
-                    if event.key == pygame.K_r:
-                        state = "menu"
-                    if event.key == pygame.K_q:
-                        pygame.quit()
-                        sys.exit()
-                if not test_done:
-                    if start_time == None:
-                        start_time = pygame.time.get_ticks()
-                        test_active = True
-                    if event.key == pygame.K_BACKSPACE:
-                        typed_text = typed_text[:-1]
-                    elif event.unicode and event.unicode.isprintable():
-                        if len(typed_text) < len(target_text):
-                            typed_text += event.unicode
-                    if typed_text[:len(target_text)] == target_text:
-                        elapsed = (pygame.time.get_ticks() - start_time) / 1000
-                        test_done = True
+                if start_time == None:
+                    start_time = pygame.time.get_ticks()
+                    test_active = True
+                if event.key == pygame.K_BACKSPACE:
+                    typed_text = typed_text[:-1]
+                elif event.unicode and event.unicode.isprintable():
+                    if len(typed_text) < len(target_text):
+                        typed_text += event.unicode
+                if typed_text[:len(target_text)] == target_text:
+                    elapsed = (pygame.time.get_ticks() - start_time) / 1000
+                    test_done = True
+                    state = "results"
+            elif state == "results":
+                if event.key == pygame.K_r:
+                    state = "menu"
+                if event.key == pygame.K_q:
+                    pygame.quit()
+                    sys.exit()
     screen.fill(bg_color)
     # drawing section
     if state == "menu":
         draw_menu()
     elif state == "game":
-    # shows live WPM and accuracy on screen while typing
-        if test_done:
-            results = evaluate_performance(typed_text, target_text, elapsed, word_data)
-            final_wpm = results["wpm"]
-            final_acc = results["accuracy"]
-            missed = results["missed_words"]
-
-            title_surface = font_large.render("Test Complete!", True, (255, 255, 100))
-            wpm_surface = font_large.render(f"WPM: {final_wpm}", True, (255, 255, 255))
-            acc_surface = font_large.render(f"Accuracy: {final_acc}%", True, (255, 255, 255))
-            retry_surface = font_small.render("Press R to retry or Q to quit", True, (150, 150, 150))
-
-            screen.blit(title_surface, (width // 2 - title_surface.get_width() // 2, 180))
-            screen.blit(wpm_surface, (width // 2 - wpm_surface.get_width() // 2, 250))
-            screen.blit(acc_surface, (width // 2 - acc_surface.get_width() // 2, 300))
-            screen.blit(retry_surface, (width // 2 - retry_surface.get_width() // 2, 380))
-
-        elif test_active:
+        if test_active: 
             elapsed = (pygame.time.get_ticks() - start_time) / 1000
             results = evaluate_performance(typed_text, target_text, elapsed, word_data)
             wpm = results["wpm"]
@@ -747,8 +730,27 @@ while True:
                 list_position += 1
             y += 55
             list_position += 1
+
         # draw small direction
         action_surface = font_small.render("Start typing to begin...", True, (150, 150, 150))
         screen.blit(action_surface, (50, height - 40))
+
+    # shows live WPM and accuracy on screen while typing
+    elif state == "results":
+        results = evaluate_performance(typed_text, target_text, elapsed, word_data)
+        final_wpm = results["wpm"]
+        final_acc = results["accuracy"]
+        missed = results["missed_words"]
+
+        title_surface = font_large.render("Test Complete!", True, (255, 255, 100))
+        wpm_surface = font_large.render(f"WPM: {final_wpm}", True, (255, 255, 255))
+        acc_surface = font_large.render(f"Accuracy: {final_acc}%", True, (255, 255, 255))
+        retry_surface = font_small.render("Press R to retry or Q to quit", True, (150, 150, 150))
+
+        screen.blit(title_surface, (width // 2 - title_surface.get_width() // 2, 180))
+        screen.blit(wpm_surface, (width // 2 - wpm_surface.get_width() // 2, 250))
+        screen.blit(acc_surface, (width // 2 - acc_surface.get_width() // 2, 300))
+        screen.blit(retry_surface, (width // 2 - retry_surface.get_width() // 2, 380))
+
     pygame.display.flip()
     clock.tick(60)
