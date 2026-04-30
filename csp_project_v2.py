@@ -2,32 +2,32 @@ import pygame
 import sys
 import random
 
-# setup
+# pygame initialization
 pygame.init()
 
 width, height = 1200, 600
 screen = pygame.display.set_mode((width,height))
 pygame.display.set_caption("WPM Tracker")
 
-# clock
+# display clock for frame rate control
 clock = pygame.time.Clock()
 fps = 60
 
-# colors
+# color definitions
 bg_color = (30, 30, 30)
-text_dim = (80, 80, 80)           # untyped letters
+text_dim = (80, 80, 80)
 text_correct = (200, 100, 200)
 text_wrong = (200, 50, 50)
 text_cursor = (230, 180, 80)
-text_ui = (100, 100, 100)         # WPM/accuracy labels
-text_highlight = (230, 180, 80)   # WPM numbers and results
+text_ui = (100, 100, 100)
+text_highlight = (230, 180, 80)
 
-#fonts
+# font definitions for large text, UI labels, and small hints
 font_large = pygame.font.SysFont("consolas", 40)
 font_medium = pygame.font.SysFont("consolas", 25)
 font_small = pygame.font.SysFont("consolas", 18)
 
-# list of possible words to type
+# word bank: each entry stores word, category, difficulty, and miss count
 word_data = [
     {"word": "apple", "category": "food", "difficulty": 1, "miss_count": 0},
     {"word": "lantern", "category": "objects", "difficulty": 2, "miss_count": 0},
@@ -580,7 +580,7 @@ word_data = [
     {"word": "mackerel", "category": "food", "difficulty": 3, "miss_count": 0},
 ]
     
-# typing setup (variables + booleans)
+# game state and typing variables
 word_count = 0
 state = "menu"
 typed_text = ""
@@ -590,6 +590,7 @@ test_active = False
 test_done = False
 elapsed = 0
 
+# evaluates WPM, accuracy, and missed words after each test
 def evaluate_performance(typed, target, elapsed_seconds, word_data):
     if elapsed_seconds == 0:
         wpm = 0
@@ -615,6 +616,7 @@ def evaluate_performance(typed, target, elapsed_seconds, word_data):
                     entry["miss_count"] += 1
     return {"wpm": wpm, "accuracy": accuracy, "missed_words": missed_words}
 
+# builds a weighted word pool based on miss_count, then randomly samples from it
 def get_weighted_words(word_data, count):
     weighted_pool = []
     for entry in word_data:
@@ -625,7 +627,7 @@ def get_weighted_words(word_data, count):
         count = len(weighted_pool)
     return random.sample(weighted_pool, count)
 
-# menu screen
+# draws the menu screen with mode selection and start prompt
 def draw_menu():
     screen.fill(bg_color)
 
@@ -640,16 +642,18 @@ def draw_menu():
     start = font_medium.render("[ENTER]", True, text_highlight)
 
     screen.blit(mode10w, (width // 2 - mode10w.get_width() // 2, height // 2))
-    screen.blit(mode25w, (width //2 - mode25w.get_width() // 2, height //2 + 50)) # 50 = placeholder
+    screen.blit(mode25w, (width //2 - mode25w.get_width() // 2, height //2 + 50))
     screen.blit(start, (width // 2 - start.get_width() // 2, height // 2 + 120))
 
-# game loop
+# main game loop: handles input and rendering for all three states
 while True:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             pygame.quit()
             sys.exit()
         if event.type == pygame.KEYDOWN:
+
+            # menu state: select word count and start game
             if state == "menu":
                 if event.key == pygame.K_1:
                     word_count = 10
@@ -664,6 +668,8 @@ while True:
                     test_done = False
                     elapsed = 0
                     state = "game"
+            
+            # game state: start timer on first keypress, handle typing and test completion
             elif state == "game":
                 if start_time == None:
                     start_time = pygame.time.get_ticks()
@@ -677,6 +683,8 @@ while True:
                     elapsed = (pygame.time.get_ticks() - start_time) / 1000
                     test_done = True
                     state = "results"
+            
+            # results state: allow retry or quit
             elif state == "results":
                 if event.key == pygame.K_r:
                     state = "menu"
@@ -684,9 +692,12 @@ while True:
                     pygame.quit()
                     sys.exit()
     screen.fill(bg_color)
-    # drawing section
+
+    # render menu screen
     if state == "menu":
         draw_menu()
+
+    # render game screen with live WPM accuracy, and color-coded letters
     elif state == "game":
         if test_active: 
             elapsed = (pygame.time.get_ticks() - start_time) / 1000
@@ -698,7 +709,7 @@ while True:
             screen.blit(wpm_surface, (50,30))
             screen.blit(acc_surface, (200, 30))
 
-        # draw letters one by one
+        # build word-wrapped lines from target text
         words_in_target = target_text.split(" ")
         current_text_width = 0
         current_line = []
@@ -713,6 +724,7 @@ while True:
             current_text_width += word_width
         completed_lines.append(current_line)
 
+        # render each character with correct/wrong/untyped color
         total_height = len(completed_lines) * 55
         y = height // 2 - total_height // 2
         list_position = 0
@@ -731,11 +743,11 @@ while True:
             y += 55
             list_position += 1
 
-        # draw small direction
+        # action text at bottom of screen
         action_surface = font_small.render("Start typing to begin...", True, (150, 150, 150))
         screen.blit(action_surface, (50, height - 40))
 
-    # shows live WPM and accuracy on screen while typing
+    # render results screen with final WPM and accuracy
     elif state == "results":
         results = evaluate_performance(typed_text, target_text, elapsed, word_data)
         final_wpm = results["wpm"]
